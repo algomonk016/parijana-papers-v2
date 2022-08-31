@@ -19,7 +19,7 @@ function Hero() {
 
   return (
     <Grid border={'none'} position={'relative'} bgcolor={'white'} p={5} height={'90vh'} display={'flex'} alignItems={'center'} px={5} >
-      <Grid xs={12} container justifyContent={'end'}>
+      <Grid item xs={12} container justifyContent={'end'}>
         <Grid item sm={5} p={5} display={'flex'} flexDirection={'column'} justifyContent={'space-around'} >
           <Grid>
             <Typography component={'h1'} fontSize={60} > Lorem ipsum dolor sit  </Typography>
