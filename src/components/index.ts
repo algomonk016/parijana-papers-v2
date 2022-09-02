@@ -1,4 +1,5 @@
 export * from './Documents'
+export { default as DynamicForm } from './DynamicForm/'
 
 // template components
 export { default as Text } from './Text'

@@ -96,3 +96,10 @@ export interface Project{
   images?: string[],  
   interestedUsers?: IdName[],
 }
+
+export interface Option{
+  label: string,
+  value: string
+}
+
+export type Options = Option[];

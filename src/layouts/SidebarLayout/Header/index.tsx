@@ -40,7 +40,7 @@ const HeaderWrapper = styled(Box)(
 );
 
 function Header() {
-  const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
+  // const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const theme = useTheme();
   const [hasScrolled, setHasScrolled] = useState<boolean>(false);
   const [lastScrollY, setLastScrollY] = useState<number>(0);
@@ -99,7 +99,7 @@ function Header() {
       <Box display="flex" alignItems="center">
         <HeaderButtons />
         <HeaderUserbox />
-        <Box
+        {/* <Box
           component="span"
           sx={{
             ml: 2,
@@ -115,7 +115,7 @@ function Header() {
               )}
             </IconButton>
           </Tooltip>
-        </Box>
+        </Box> */}
       </Box>
     </HeaderWrapper>
   );
