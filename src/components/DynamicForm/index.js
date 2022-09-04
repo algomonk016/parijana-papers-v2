@@ -3,7 +3,7 @@ import { Formik } from "formik";
 import * as yup from 'yup'
 import { createYupSchema } from '@/utils/yupSchemaCreator'
 import Field from "./fields";
-import { Button, IconButton } from "@mui/material";
+import { Button, IconButton, Grid, Badge, Divider } from "@mui/material";
 import { Done, DeleteOutline } from "@mui/icons-material";
 
 const FormikApp = ({
@@ -49,21 +49,19 @@ const FormikApp = ({
             <>
               <div style={{
                 display: 'flex',
-                alignItems: 'flex-start'
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-evenly'
               }}>
                 <Field fields={formFields} formikProps={formikProps} />
               </div>
-              <Button type="submit" color="success" variant="contained" >Submit</Button>
+              
+              <Grid width={'full'} container display={'flex'} justifyContent={'space-around'} mt={4} >
+                <Grid item xs={8.5}><Button type="submit" color="success" fullWidth variant="contained" >Submit</Button></Grid>
+                <Grid item xs={3}><Button variant="outlined" color="error" fullWidth onClick={formikProps.resetForm} type="reset" >Reset</Button></Grid>
+              </Grid>
             </>
           }
-          {/* <button
-            style={{
-              margin: '0 5px 5px 5px',
-              padding: '5px 10px',
-            }}
-            onClick={formikProps.resetForm}
-            type="reset" 
-            >Reset</button> */}
         </form>
       )
       }

@@ -11,7 +11,7 @@ export const FieldContainer = styled.div`
   }
 
   @media screen and (min-width: 1024px) {
-    width: 300px;
+    width: 280px;
   }
 `;
 
@@ -24,7 +24,7 @@ export const Input = styled.input`
   border: 1px #DCDCDC solid;
   height: 35px;
   @media screen and (min-width: 1024px) {
-    width: 300px;
+    width: 280px;
   }
 `;
 
@@ -36,7 +36,7 @@ export const Select = styled.select`
   box-sizing: border-box;
 
   @media screen and (min-width: 1024px) {
-    width: 300px;
+    width: 280px;
   }
 `;
 
@@ -50,7 +50,7 @@ export const TextArea = styled.textarea`
   border: 1px solid silver;
 
   @media screen and (min-width: 1024px) {
-    width: 300px;
+    width: 280px;
   }
 `;
 
@@ -62,7 +62,7 @@ export const Upload = styled.input`
   height: 30px;
 
   @media screen and (min-width: 1024px) {
-    width: 300px;
+    width: 280px;
   }
 `;
 
