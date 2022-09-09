@@ -9,7 +9,7 @@ import {
   PostAddTwoTone,
   // ReviewsTwoTone
 } from "@mui/icons-material";
-import { AddDocumentForm } from '@/components'
+import { AddDocumentForm, CollegeDetails } from '@/components'
 import Modal from "@/components/modals";
 
 interface DocumentsResponse {
@@ -91,6 +91,7 @@ const Admin = (): JSX.Element => {
         </div>
       </Container>
 
+      <CollegeDetails />
     </div>
   )
 }

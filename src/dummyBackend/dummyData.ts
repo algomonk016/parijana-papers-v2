@@ -1,4 +1,4 @@
-import { PDF, University } from "src/constants/"
+import { PDF } from "src/constants/"
 
 export const documents: PDF[] = [
   {
@@ -185,31 +185,4 @@ export const documents: PDF[] = [
     rating: 4.5,
     comments: []
   },
-]
-
-export const universities: University[] = [
-  {
-    id: 'csjmu',
-    name: 'Chhatrapati Shahu Ji Maharaj University',
-    colleges: [
-      {
-        id: 'uiet',
-        name: 'University Institute Of Engg & Technology'
-      },
-      {
-        id: 'col2',
-        name: 'Second College of CSJMU'
-      }
-    ]
-  },
-  {
-    id: 'amity',
-    name: 'Amity University',
-    colleges: [
-      {
-        id: 'amitybtech',
-        name: 'Amity btech'
-      }
-    ]
-  }
 ]

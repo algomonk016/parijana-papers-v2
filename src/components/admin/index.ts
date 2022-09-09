@@ -1,0 +1,1 @@
+export { default as CollegeDetails } from './CollegeDetails';

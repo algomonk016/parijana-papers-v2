@@ -34,3 +34,21 @@ export const generateDropDownOptions = (array: any[]): Options => {
 
   return options
 }
+
+type storageType = 'local' | 'session';
+export const getStorageData = (key: string, storage: storageType = 'local'): any => {
+  const pureData = ['string', 'number', 'Date'];
+  let data = storage === 'session' ? sessionStorage.getItem(key) : localStorage.getItem(key) ;
+
+  if(!data){
+    return undefined;
+  }
+
+  if(pureData.includes(typeof data)){
+    return data;
+  }
+
+  data = JSON.parse(data);
+
+  return data;
+}

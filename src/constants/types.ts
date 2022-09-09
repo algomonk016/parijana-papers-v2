@@ -30,10 +30,11 @@ export interface Comment {
 
 export type pdfFor = 'quiz' | 'mid' | 'end';
 
-export interface University {
+export interface College {
   id: string,
   name: string,
-  colleges: IdName[], // college ids
+  teacher?: string[],
+  exams?: string[]
 }
 
 export interface College {
@@ -68,6 +69,7 @@ export interface Subject {
 }
 
 export interface User {
+    id: string,
     name: string,
     email: string,
     age?: number,
