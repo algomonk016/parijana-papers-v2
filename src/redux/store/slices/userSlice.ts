@@ -1,17 +1,15 @@
-import { createSlice, Draft, PayloadAction } from '@reduxjs/toolkit';
-
-export interface UserState {
-  email: string;
-  name: string;
-}
+import { createSlice, Draft } from '@reduxjs/toolkit';
+import { User } from '@/constants';
 
 /**
  * Default state object with initial values.
  */
-const initialState: UserState = {
-  name: 'shivesh',
-  email: 'stshandilya0820@gmail.com',
-} as const;
+
+const initialState: any = {
+  isLoading: true,
+  hasError: false,
+  data: {}
+}
 
 /**
  * Create a slice as a reducer containing actions.
@@ -23,25 +21,35 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    setName: (
+    fetchUserStart: (
       state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.name>
+      // action: PayloadAction<typeof initialState.id>
     ) => {
-      state.name = action.payload;
+      state.isLoading = true;
     },
-    setEmail: (
+    fetchUserSuccess: (
       state: Draft<typeof initialState>,
-      action: PayloadAction<typeof initialState.email>
+      { payload }
     ) => {
-      state.email = action.payload;
+      state.isLoading = false;
+      state.data = payload;
+      state.hasError = false;
     },
+    fetchUserFailure: (
+      state: Draft<typeof initialState>,
+      { payload }
+    ) => {
+      state.isLoading = false;
+      state.data = payload;
+      state.hasError = true;
+    }
   },
 });
 
 // A small helper of user state for `useSelector` function.
-export const getUserState = (state: { user: UserState }) => state.user;
+export const getUser = (state: { user: User }) => state.user;
 
 // Exports all actions
-export const { setName, setEmail } = userSlice.actions;
+export const { fetchUserStart, fetchUserFailure, fetchUserSuccess } = userSlice.actions;
 
 export default userSlice.reducer;
