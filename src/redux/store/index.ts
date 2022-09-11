@@ -1,4 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 import userSlice from './slices/userSlice';
 import {
   useDispatch as useDispatchBase,
@@ -22,7 +22,13 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 
 // Inferred type: { users: UsersState}
-type AppDispatch = typeof store.dispatch;
+export type AppDispatch = typeof store.dispatch;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
 
 // Since we use typescript, lets utilize `useDispatch`
 export const useDispatch = () => useDispatchBase<AppDispatch>();

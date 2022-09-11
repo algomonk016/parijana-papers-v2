@@ -11,9 +11,12 @@ import {
   Stack,
   TextField,
 } from "@mui/material";
+import { useRouter } from 'next/router'
 import { LoadingButton } from "@mui/lab";
 import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
+import { useAppDispatch } from "@/redux/hooks";
+import { fetchUserDetails } from "@/redux/store/slices/userSlice";
 
 interface Props {
 }
@@ -37,7 +40,8 @@ const animate = {
 
 const LoginForm = (props: Props) => {
   const [showPassword, setShowPassword] = useState(false);
-
+  const dispatch = useAppDispatch()
+  const router = useRouter()
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Provide a valid email address")
@@ -53,12 +57,16 @@ const LoginForm = (props: Props) => {
     },
     validationSchema: LoginSchema,
     onSubmit: (values: LoginData) => {
-      console.log('values', values)
+      alert('')
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } =
-    formik;
+  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
+
+  const handleClick = () => {
+    dispatch(fetchUserDetails(1))
+    router.push('/admin/profile')
+  }
 
   return (
     <FormikProvider value={formik}>
@@ -148,6 +156,9 @@ const LoginForm = (props: Props) => {
               style={{
                 backgroundColor: '#1876D1'
               }}
+
+              onClick={handleClick}
+
             >
               {isSubmitting ? "loading..." : "Login"}
             </LoadingButton>
