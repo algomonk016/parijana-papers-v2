@@ -25,7 +25,8 @@ export async function handleErrors(response: Response) {
 }
 
 function getAccessToken(): string {
-    return localStorage.getItem('access_token') as string;
+  // TODO: fix me later
+  return sessionStorage.getItem('access_token') as string;
 }
 
 export function setAccessToken(access_token: string) {

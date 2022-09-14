@@ -17,6 +17,7 @@ import { Icon } from "@iconify/react";
 import { motion } from "framer-motion";
 import { useAppDispatch } from "@/redux/hooks";
 import { fetchUserDetails } from "@/redux/store/slices/userSlice";
+import { afterLogin, LoginUser, loginUser } from "@/service/user.service";
 
 interface Props {
 }
@@ -39,9 +40,8 @@ const animate = {
 };
 
 const LoginForm = (props: Props) => {
-  const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useAppDispatch()
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
       .email("Provide a valid email address")
@@ -57,16 +57,27 @@ const LoginForm = (props: Props) => {
     },
     validationSchema: LoginSchema,
     onSubmit: (values: LoginData) => {
-      alert('')
+      setIsSubmitting(true);
+      const { email, password } = values;
+      const payload: LoginUser = {email, password};
+
+      loginUser(payload)
+      .then((res: any) => {
+        if(res.hasOwnProperty('error')){
+          const { message } = res.error;
+          alert(message)
+        } else{
+          const { token } = res;
+          afterLogin(token);
+        }
+      }).
+      finally(() => {
+        setIsSubmitting(false);
+      })
     },
   });
 
-  const { errors, touched, values, isSubmitting, handleSubmit, getFieldProps } = formik;
-
-  const handleClick = () => {
-    dispatch(fetchUserDetails(1))
-    router.push('/admin/profile')
-  }
+  let { errors, touched, values, handleSubmit, getFieldProps } = formik;
 
   return (
     <FormikProvider value={formik}>
@@ -136,7 +147,7 @@ const LoginForm = (props: Props) => {
               justifyContent="space-between"
               sx={{ my: 2 }}
             >
-              <FormControlLabel
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     {...getFieldProps("remember")}
@@ -144,7 +155,7 @@ const LoginForm = (props: Props) => {
                   />
                 }
                 label="Remember me"
-              />
+              /> */}
             </Stack>
 
             <LoadingButton
@@ -157,7 +168,7 @@ const LoginForm = (props: Props) => {
                 backgroundColor: '#1876D1'
               }}
 
-              onClick={handleClick}
+              // onClick={handleClick}
 
             >
               {isSubmitting ? "loading..." : "Login"}

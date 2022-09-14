@@ -15,6 +15,7 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import Header from '@/layouts/SidebarLayout/Header';
 import { Grid } from '@mui/material';
+import { changeRoute, checkLoggedInUser, logoutUser } from '@/utils';
 // import { Footer } from '@/components';
 
 const clientSideEmotionCache = createEmotionCache();
@@ -40,9 +41,19 @@ function MyApp(props: ParijanaAppProps) {
   const route = pathname.split('/')[1];
   const isHome = route.length === 0
   const hideNavbarOnRoutes = ['login', 'signup', 'components'];
+  const isAdminRoute = route === 'admin';
   const showNavbar = !(hideNavbarOnRoutes.includes(route))
   // const hideFooterOnRoutes = ['login', 'signup', 'components'];
   // const showFooter = !(hideFooterOnRoutes.includes(route))
+
+  // change route if conditions not met
+  const { isAdmin, isLoggedIn } = checkLoggedInUser();
+  if(['login', 'signup'].includes(route) && isLoggedIn){
+    changeRoute( isAdmin ? '/admin' : '/' )
+  }
+  if(isAdminRoute && !isAdmin){
+    logoutUser();
+  }
 
   return (
     <Provider store={store}>

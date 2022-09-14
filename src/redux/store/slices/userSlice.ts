@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState, AppThunk } from '@/redux/store';
 import { getUser } from '@/service/user.service';
+import { getStorageData, setStorageData } from '@/utils';
 
 export interface UserState {
   data: any;
@@ -14,9 +15,10 @@ const initialState: UserState = {
 
 export const fetchUserDetails = createAsyncThunk(
   'user/fetchDetails',
-  async (id:number) => {
-    const response = await getUser(id);
-    return response;
+  async () => {
+    const user = await getUser();
+    setStorageData('user', 'session', user);
+    return user;
   }
 )
 
@@ -32,7 +34,6 @@ export const userSlice = createSlice({
       .addCase(fetchUserDetails.fulfilled, (state, action) => {
         state.status = 'idle';
         state.data = action.payload;
-        console.log('action', action.payload)
       })
       .addCase(fetchUserDetails.rejected, (state) => {
         state.status = 'failed';

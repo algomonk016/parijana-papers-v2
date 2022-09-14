@@ -22,6 +22,7 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+import { checkLoggedInUser, getReduxStateData, getStorageData } from '@/utils';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -66,6 +67,11 @@ function HeaderUserbox() {
     avatar: profileImageURL,
     jobtitle: 'Software Engineer'
   };
+
+  const isLoggedIn = checkLoggedInUser();
+  const currentUser = getStorageData('user', 'session');
+
+  console.log('isLoggedIn', isLoggedIn, '\ncurrentUser', currentUser);
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -118,7 +124,7 @@ function HeaderUserbox() {
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
         <List sx={{ p: 1 }} component="nav">
-          <NextLink href="/management/profile" passHref>
+          <NextLink href="/admin/profile" passHref>
             <ListItem button>
               <AccountBoxTwoToneIcon fontSize="small" />
               <ListItemText primary="My Profile" />

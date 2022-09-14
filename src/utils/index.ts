@@ -1,4 +1,14 @@
 import { Option, Options } from '@/constants'
+import { store } from '@/redux/store';
+import Router from 'next/router';
+
+const pureData = ['string', 'number', 'Date'];
+type storageType = 'local' | 'session';
+export interface CheckLoggedInUser {
+  isLoggedIn: boolean;
+  isAdmin: boolean;
+}
+
 
 export const isDevelopment: boolean = !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 
@@ -12,7 +22,7 @@ export const getWindowDimensions = () => {
 
 export const generateDropDownOptions = (array: any[]): Options => {
   let options: Options = [];
-  if(typeof array[0] === 'string'){
+  if (typeof array[0] === 'string') {
     options = array.map((element: string) => {
       let op: Option = {
         label: element,
@@ -21,9 +31,9 @@ export const generateDropDownOptions = (array: any[]): Options => {
 
       return op;
     })
-  } else{
+  } else {
     options = array.map((element: any) => {
-      const {id, name} = element;
+      const { id, name } = element;
       let op: Option = {
         label: name,
         value: id
@@ -35,20 +45,65 @@ export const generateDropDownOptions = (array: any[]): Options => {
   return options
 }
 
-type storageType = 'local' | 'session';
 export const getStorageData = (key: string, storage: storageType = 'local'): any => {
-  const pureData = ['string', 'number', 'Date'];
-  let data = storage === 'session' ? sessionStorage.getItem(key) : localStorage.getItem(key) ;
+  if (typeof window !== 'undefined') {
+    let data = (storage === 'local') ? localStorage.getItem(key) : sessionStorage.getItem(key);
 
-  if(!data){
-    return undefined;
+    if (!data) {
+      return undefined;
+    }
+
+    try{
+      return JSON.parse(data);
+    } catch(e){
+      return data;
+    }
+
   }
 
-  if(pureData.includes(typeof data)){
-    return data;
+  return undefined;
+
+}
+
+export const setStorageData = (key: string, storage: storageType = 'local', data: any): any => {
+  if (!pureData.includes(typeof data)) {
+    data = JSON.stringify(data);
   }
 
-  data = JSON.parse(data);
+  storage === 'session' ? sessionStorage.setItem(key, data) : localStorage.setItem(key, data);
+}
 
-  return data;
+export const getReduxStateData = (key: string = '') => {
+  const data: any = store.getState()
+  if (key.length !== 0) {
+    return data[key];
+  }
+
+  return undefined;
+}
+
+export const checkLoggedInUser = (): CheckLoggedInUser => {
+  const user = getStorageData('user', 'session');
+  if (!!user) {
+    const { isAdmin } = user;
+    return {
+      isAdmin: isAdmin,
+      isLoggedIn: true
+    }
+  }
+  return {
+    isAdmin: false,
+    isLoggedIn: false
+  }
+}
+
+export const changeRoute = (path: string) => {
+  typeof window !== 'undefined' && Router.push(path);
+}
+
+export const logoutUser = () => {
+  if(typeof window !== 'undefined'){
+    sessionStorage.clear();
+  }
+  changeRoute('/login');
 }
