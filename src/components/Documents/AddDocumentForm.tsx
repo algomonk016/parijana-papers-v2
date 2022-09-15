@@ -1,79 +1,34 @@
-import React, { useEffect } from "react";
-import { Box, Grid } from "@mui/material";
-import Select from 'react-select';
-import { generateDropDownOptions, getWindowDimensions } from "@/utils";
+import React, { useEffect, useState } from "react";
+import { Grid, TextField } from "@mui/material";
+import { generateDropDownOptions, getStorageData, getWindowDimensions } from "@/utils";
 import { DynamicForm } from '@/components';
+import { College, Option } from "@/constants";
+import { getCollegeById } from "@/service/college.service";
+import { postDocumentData, uploadPdf } from "@/service/document.service";
 
-const collegeOptions = [
-  {
-    label: 'college1',
-    value: 'college1'
-  },
-  {
-    label: 'college2',
-    value: 'college2'
-  },
-  {
-    label: 'college3',
-    value: 'college3'
-  },
-  {
-    label: 'college4',
-    value: 'college4'
-  },
-  {
-    label: 'college5',
-    value: 'college5'
-  },
+interface FormProps {
+  collegeDetails: College
+}
 
-]
+interface Form{
+  name: string;
+  subject: string;
+  pdfFor: Option;
+  teacher: Option;
+  year: string;
+  sem: string;
+  viewLink?: string;
+  downloadLink?: string;
+}
 
-const pdfFor = [
-  {
-    label: 'Mid1',
-    value: 'mid1'
-  },
-  {
-    label: 'Mid2',
-    value: 'mid2'
-  },
-  {
-    label: 'End',
-    value: 'end'
-  },
-  {
-    label: 'Practical',
-    value: 'practical'
-  },
-]
+type UploadStage = 'idle' | 'uploadingfile' | 'uploadingdetails' | 'success' | 'failure';
 
-const teachers = [
-  {
-    label: 'Teacher1',
-    value: 'teacher1'
-  },
-  {
-    label: 'Teacher2',
-    value: 'teacher2'
-  },
-  {
-    label: 'Teacher3',
-    value: 'teacher3'
-  },
-  {
-    label: 'Teacher4',
-    value: 'teacher4'
-  },
-]
-
-const AddDocumentForm = (): JSX.Element => {
-  const { height } = getWindowDimensions();
-  useEffect(() => { }, [])
-
-  {/*  teacher, file name, year, document, view link, download link, pdfFor,  */ }
+const Form = (props: FormProps): JSX.Element => {
+  const { teachers, name, exams, id } = props.collegeDetails;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const fields: any = [
     {
-      id: "fileName",
+      id: "name",
       label: "File Name",
       placeholder: "File Name",
       type: "text",
@@ -98,7 +53,7 @@ const AddDocumentForm = (): JSX.Element => {
       validationType: "",
       value: '',
       validations: [],
-      options: pdfFor
+      options: generateDropDownOptions(exams)
     },
     {
       id: "teacher",
@@ -108,7 +63,7 @@ const AddDocumentForm = (): JSX.Element => {
       validationType: "",
       value: '',
       validations: [],
-      options: teachers
+      options: generateDropDownOptions(teachers)
     },
     {
       id: "year",
@@ -127,38 +82,109 @@ const AddDocumentForm = (): JSX.Element => {
       validationType: "string",
       value: '',
       validations: [],
-    },
-    {
-      id: "document",
-      label: "Upload File",
-      placeholder: "",
-      type: "upload",
-      validationType: "",
-      value: '',
-      validations: [],
-    },
+    }
   ]
 
+  const [fileSelected, setFileSelected] = useState<any>();
+
+  const onSubmit = async (data: Form) => {
+    handleUploadStage('uploadingfile');
+
+    const response = await uploadPdf(fileSelected);
+    if(response.hasOwnProperty('error')){
+      handleUploadStage('failure');
+      return;
+    }
+
+    const collegeId = id;
+    const { viewLink, downloadLink } = response;
+    const adminDetails = getStorageData('user', 'session');
+    const uploaderDetails = {
+      uploadedBy: adminDetails.name,
+      adminId: adminDetails.id
+    }
+
+    {/*  teacher, file name, year, document, view link, download link, pdfFor,  */ }
+    let payload: any = { ...data, viewLink, downloadLink, collegeId, ...uploaderDetails };
+    payload.pdfFor = payload.pdfFor.value;
+    payload.teacher = payload.teacher.value;
+    handleUploadStage('uploadingdetails')
+    postDocumentData(payload)
+      .then((res: any) => {
+        console.log('res', res)
+      })
+
+  }
+
+  const handleUploadStage = (stage: UploadStage): void => {
+    if(stage !== 'success' && stage !== 'failure'){
+      setIsLoading(true);
+    } else{
+      setIsLoading(false);
+
+      if(stage === 'failure'){
+        alert('something went wrong');
+      } else{
+        alert('success');
+      }
+
+    }
+  }
+
   return (
-    <Grid minHeight={height*0.7}>
-      <Grid p={1}>
-        <div style={{padding: '6px'}}>
-          <div className="label" style={{ fontWeight: 'bold' }}>College</div>
-          <Select
-            options={collegeOptions}
-            placeholder={'select college'}
-          />
-        </div>
-        <DynamicForm
-          formFields={fields}
-          onSubmit={(e: any) => console.log('submitted', e)}
-          onReset={() => { }}
-          showReset
-          removeField={() => { }}
-        />
-      </Grid>
+    <Grid p={1}>
+      <div style={{ padding: '6px' }}>
+        <div className="label" style={{ fontWeight: 'bold', marginBottom: '7px' }}>College</div>
+        <TextField value={name} variant={'outlined'} size={'small'} fullWidth disabled />
+        <input type={'file'} accept={'application/pdf'}  onChange = { e => setFileSelected(e.target.files[0])}  />
+      </div>
+      <DynamicForm
+        formFields={fields}
+        onSubmit={onSubmit}
+        onReset={() => { }}
+        showReset
+        removeField={() => { }}
+      />
     </Grid>
   )
 }
 
+const AddDocumentForm = (): JSX.Element => {
+  const { height } = getWindowDimensions();
+  const { collegeId } = getStorageData('user', 'session')
+  const [collegeDetails, setCollegeDetails] = useState<College>()
+  const [hasFetchedDetails, setHasFetchedDetails] = useState<boolean>(false)
+  useEffect(() => {
+    getCollegeById(collegeId)
+      .then((clg: College) => {
+        setCollegeDetails(clg)
+        setHasFetchedDetails(true)
+      })
+  }, [])
+
+  return (
+    <Grid minHeight={height * 0.7}>
+      {
+        hasFetchedDetails ? <Form collegeDetails={collegeDetails} /> : <h1>Loading....</h1>
+      }
+    </Grid >
+  )
+}
+
 export default AddDocumentForm;
+
+/*
+{
+  "viewLink": "https://parijana.s3.amazonaws.com/pdfs/2021-Kanpur-Mathura%20Site-PLACE_1663252637498.pdf",
+
+  "downloadLink": ""
+}
+
+{
+  collegeId:  "6310b45ed6d3ca2feaca13be"
+  id: "3eafd49d-d134-4453-9dd7-28dc9e429f66"
+}
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNlYWZkNDlkLWQxMzQtNDQ1My05ZGQ3LTI4ZGM5ZTQyOWY2NiIsImVtYWlsIjoic29ua2FyU2hyZXlhQGdtYWlsLmNvbSIsImlhdCI6MTY2MzI1MjQ3NywiZXhwIjoxNjYzMjc0MDc3fQ.cRg1SzgladWBr7EtDZ8jUAlgiNiiG3bUUxR_-tTw4h4
+
+*/ 

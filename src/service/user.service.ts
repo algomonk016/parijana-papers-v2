@@ -1,4 +1,4 @@
-import { changeRoute, getStorageData, setStorageData } from "@/utils";
+import { changeRoute, setStorageData } from "@/utils";
 import { getData, postData } from "./common.service";
 import { store } from "@/redux/store";
 import { fetchUserDetails } from "@/redux/store/slices/userSlice";

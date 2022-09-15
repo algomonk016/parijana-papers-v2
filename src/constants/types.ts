@@ -33,16 +33,16 @@ export type pdfFor = 'quiz' | 'mid' | 'end';
 export interface College {
   id: string,
   name: string,
-  teacher?: string[],
+  teachers?: string[],
   exams?: string[]
 }
 
-export interface College {
-  id: string,
-  name: string,
-  teachers: Teacher[],
-  courses: Course[]
-}
+// export interface College {
+//   id: string,
+//   name: string,
+//   teachers: Teacher[],
+//   courses: Course[]
+// }
 
 export interface Teacher{
   id: string,
