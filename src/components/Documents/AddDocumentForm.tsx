@@ -15,8 +15,8 @@ interface Form{
   subject: string;
   pdfFor: Option;
   teacher: Option;
-  year: string;
-  sem: string;
+  year: number;
+  sem: number;
   viewLink?: string;
   downloadLink?: string;
 }
@@ -37,7 +37,7 @@ const Form = (props: FormProps): JSX.Element => {
       validations: [],
     },
     {
-      id: "subject",
+      id: "subCode",
       label: "Subject Code",
       placeholder: "Subject Code",
       type: "text",
@@ -96,16 +96,18 @@ const Form = (props: FormProps): JSX.Element => {
       return;
     }
 
+    data.year = Number(data.year);
+    data.sem = Number(data.sem);
+
     const collegeId = id;
-    const { viewLink, downloadLink } = response;
+    const { viewLink } = response;
     const adminDetails = getStorageData('user', 'session');
     const uploaderDetails = {
-      uploadedBy: adminDetails.name,
       adminId: adminDetails.id
     }
 
     {/*  teacher, file name, year, document, view link, download link, pdfFor,  */ }
-    let payload: any = { ...data, viewLink, downloadLink, collegeId, ...uploaderDetails };
+    let payload: any = { ...data, viewLink, downloadLink: viewLink, collegeId, ...uploaderDetails };
     payload.pdfFor = payload.pdfFor.value;
     payload.teacher = payload.teacher.value;
     handleUploadStage('uploadingdetails')
@@ -172,19 +174,3 @@ const AddDocumentForm = (): JSX.Element => {
 }
 
 export default AddDocumentForm;
-
-/*
-{
-  "viewLink": "https://parijana.s3.amazonaws.com/pdfs/2021-Kanpur-Mathura%20Site-PLACE_1663252637498.pdf",
-
-  "downloadLink": ""
-}
-
-{
-  collegeId:  "6310b45ed6d3ca2feaca13be"
-  id: "3eafd49d-d134-4453-9dd7-28dc9e429f66"
-}
-
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNlYWZkNDlkLWQxMzQtNDQ1My05ZGQ3LTI4ZGM5ZTQyOWY2NiIsImVtYWlsIjoic29ua2FyU2hyZXlhQGdtYWlsLmNvbSIsImlhdCI6MTY2MzI1MjQ3NywiZXhwIjoxNjYzMjc0MDc3fQ.cRg1SzgladWBr7EtDZ8jUAlgiNiiG3bUUxR_-tTw4h4
-
-*/ 
