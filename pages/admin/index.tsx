@@ -65,13 +65,13 @@ const Admin = (): JSX.Element => {
                       <Modal
                         title="Edit"
                         text={<EditTwoTone color="primary" />}
-                        content={<Grid>this should be the modal content</Grid>}
+                        content={<span>this should be the modal content</span>}
                         icon
                       />
                       <Modal
                         title="Delete"
                         text={<DeleteTwoTone color='error' />}
-                        content={<Grid>this should be the modal content</Grid>}
+                        content={<span>this should be the modal content</span>}
                         icon
                       />
                     </span>
