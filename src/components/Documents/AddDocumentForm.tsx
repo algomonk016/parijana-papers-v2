@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Fab, Grid, TextField, Typography } from "@mui/material";
+import { CircularProgress, Fab, Grid, TextField, Typography } from "@mui/material";
 import { generateDropDownOptions, getStorageData, getWindowDimensions } from "@/utils";
 import { DynamicForm } from '@/components';
 import { College, Option } from "@/constants";
 import { getCollegeById } from "@/service/college.service";
 import { postDocumentData, uploadPdf } from "@/service/document.service";
-import { Add } from '@mui/icons-material'
+import { Add, CheckCircleOutlineTwoTone, ErrorOutlineTwoTone } from '@mui/icons-material'
+
 interface FormProps {
-  collegeDetails: College
+  collegeDetails: College,
+  handleUploadStage: (stage: UploadStage) => void;
 }
 
 interface Form {
@@ -21,11 +23,19 @@ interface Form {
   downloadLink?: string;
 }
 
-type UploadStage = 'idle' | 'uploadingfile' | 'uploadingdetails' | 'success' | 'failure';
+// type UploadStage = 'idle' | 'uploadingfile' | 'uploadingdetails' | 'success' | 'failure';
+enum UploadStage {
+  idle = 'Idle',
+  uploadingfile = 'Uploading File',
+  uploadingDetails = 'Uploading Details',
+  success = 'Document Uploaded Successfully',
+  failure = 'Something Went Wrong, Please try again'
+}
 
 const Form = (props: FormProps): JSX.Element => {
-  const { teachers, name, exams, id } = props.collegeDetails;
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { collegeDetails, handleUploadStage  } = props;
+  const { teachers, name, exams, id } = collegeDetails;
+
   const fields: any = [
     {
       id: "name",
@@ -88,11 +98,20 @@ const Form = (props: FormProps): JSX.Element => {
   const [fileSelected, setFileSelected] = useState<any>();
 
   const onSubmit = async (data: Form) => {
-    handleUploadStage('uploadingfile');
+    handleUploadStage(UploadStage.uploadingfile);
+
+    // setTimeout(() => {
+    //   handleUploadStage(UploadStage.uploadingDetails)
+    //   setTimeout(() => {
+    //     handleUploadStage(UploadStage.success)
+    //   }, 1500)
+    // }, 2500)
+
+    // return;
 
     const response = await uploadPdf(fileSelected);
     if (response.hasOwnProperty('error')) {
-      handleUploadStage('failure');
+      handleUploadStage(UploadStage.failure);
       return;
     }
 
@@ -110,29 +129,14 @@ const Form = (props: FormProps): JSX.Element => {
     let payload: any = { ...data, viewLink, downloadLink: viewLink, collegeId, ...uploaderDetails };
     payload.pdfFor = payload.pdfFor.value;
     payload.teacher = payload.teacher.value;
-    handleUploadStage('uploadingdetails')
+    handleUploadStage(UploadStage.uploadingDetails)
     postDocumentData(payload)
       .then((res: any) => {
-        handleUploadStage('success');
+        handleUploadStage(UploadStage.success)
       })
       .catch((error: any) => {
-        handleUploadStage('failure');
+        handleUploadStage(UploadStage.failure)
       })
-  }
-
-  const handleUploadStage = (stage: UploadStage): void => {
-    if (stage !== 'success' && stage !== 'failure') {
-      setIsLoading(true);
-    } else {
-      setIsLoading(false);
-
-      if (stage === 'failure') {
-        alert('something went wrong');
-      } else {
-        alert('success');
-      }
-
-    }
   }
 
   return (
@@ -189,20 +193,46 @@ const AddDocumentForm = (): JSX.Element => {
       })
   }, [])
 
+  const [uploadStage, setUploadStage] = useState<UploadStage>(UploadStage.idle)
   const [isUploading, setIsUploading] =useState<boolean>(false);
+  const handleUploadStage = (stage: UploadStage): void => {
+    setUploadStage(stage)
+    console.log('stage', stage)
+    if (stage !== UploadStage.success && stage !== UploadStage.failure) {
+      setIsUploading(true);
+    } else{
+      setTimeout(() => {
+        setIsUploading(false);
+      }, 1000)
+    } 
+  }
 
   if(isUploading) {
     return (
-    <>
-      uploading document
-    </>
+    <Grid container direction={'column'}>
+      <Grid item mx={'auto'} my={3} >
+        {
+          uploadStage === UploadStage.success ? 
+            <CheckCircleOutlineTwoTone fontSize="large" color="success" /> : 
+            (
+              uploadStage === UploadStage.failure ? 
+                <ErrorOutlineTwoTone fontSize="large" color="error" /> : 
+                <CircularProgress size={'3rem'} color="primary"  />
+            )
+        }
+      </Grid>
+      <Grid item mx={'auto'} mb={3} display={'flex'} flexDirection={'column'} alignItems={'center'} justifyContent={'center'} >
+        <Typography variant="h5" >{ uploadStage }</Typography>
+        <Typography fontSize={10} variant="caption">*Do not close the modal</Typography>
+      </Grid>
+    </Grid>
     )
   }
 
   return (
     <Grid minHeight={height * 0.7}>
       {
-        hasFetchedDetails ? <Form collegeDetails={collegeDetails} /> : <h1>Loading....</h1>
+        hasFetchedDetails ? <Form collegeDetails={collegeDetails} handleUploadStage={handleUploadStage} /> : <h1>Loading....</h1>
       }
     </Grid >
   )
