@@ -1,7 +1,7 @@
 import { PDF } from "@/constants";
 import React, { useMemo, useRef, useState } from "react";
 import { ColDef, ColGroupDef, GridOptions, SideBarDef } from "ag-grid-community";
-import { columnDef } from "@/constants/ColumnDefs";
+import { columnDef } from "@/ag-grid/ColumnDefs";
 import { AgGridReact } from "ag-grid-react";
 
 interface Props {

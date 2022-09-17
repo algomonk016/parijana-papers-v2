@@ -2,7 +2,8 @@ import {
   ColDef,
   ColGroupDef,
 } from 'ag-grid-community';
-import { KeyValues } from './types';
+import { KeyValues } from '@/constants/types'
+import ButtonCellRendererForDocumentsTable from './ButtonCellRendererForDocumentsTable';
 
 export const columnDef: (ColDef | ColGroupDef | KeyValues)[] = [
   {
@@ -37,19 +38,16 @@ export const columnDef: (ColDef | ColGroupDef | KeyValues)[] = [
     field: 'year',
     sortable: true,
     filter: 'agTextColumnFilter',
-    // minWidth: 300,
   },
   {
     headerName: 'Teacher',
     field: 'teacher',
     sortable: true,
     filter: 'agTextColumnFilter',
-    // minWidth: 300,
   },
-  // {
-  //   headerName: 'Actions',
-  //   field: '',
-  //   sortable: true,
-  //   filter: 'agTextColumnFilter',
-  // },
+  {
+    headerName: 'Actions',
+    field: 'id',
+    cellRenderer: ButtonCellRendererForDocumentsTable
+  },
 ]
