@@ -1,28 +1,21 @@
 import { PDF } from "@/constants";
 import { getDocuments } from "@/dummyBackend/document.service";
-import { Grid, IconButton } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import {
-  EditTwoTone,
-  DeleteTwoTone,
   PostAddTwoTone,
   // ReviewsTwoTone
 } from "@mui/icons-material";
-import { AddDocumentForm, CollegeDetails } from '@/components'
+import { AddDocumentForm, DocumentsTable } from '@/components'
 import Modal from "@/components/modals";
-
-interface DocumentsResponse {
-  data: PDF[]
-}
 
 const Admin = (): JSX.Element => {
   const [documents, setDocuments] = useState<PDF[]>([]);
   useEffect(() => {
     getDocuments()
-      .then((res: DocumentsResponse) => {
-        const { data } = res;
-        setDocuments(data)
+      .then((res: PDF[]) => {
+        setDocuments(res)
       })
   }, [])
 
@@ -33,7 +26,7 @@ const Admin = (): JSX.Element => {
 
         <div>
           <Grid display={'flex'} justifyContent={'space-between'} >
-            <span>Recently Uploaded Documents</span>
+            <Typography variant="h4">Recently Uploaded Documents</Typography>
             <div>
               <Modal
                 title="Upload"
@@ -41,57 +34,22 @@ const Admin = (): JSX.Element => {
                 content={<AddDocumentForm />}
                 icon
               />
-              <button onClick={() => alert('show all')} >All Uploads</button>
             </div>
           </Grid>
 
-          <div>
-            {
-              documents.map((document: PDF): JSX.Element => {
-                const { id, fileName, subcode, rating } = document;
-                return (
-                  <div key={id} style={{
-                    display: 'flex',
-                    justifyContent: 'space-evenly'
-                  }} >
-                    <span>{id}</span>
-                    <span>{subcode}</span>
-                    <span>{fileName}</span>
-                    <span>{rating}</span>
-                    <span style={{
-                      display: 'flex',
-                      justifyContent: 'center',
-                    }} >
-                      <Modal
-                        title="Edit"
-                        text={<EditTwoTone color="primary" />}
-                        content={<span>this should be the modal content</span>}
-                        icon
-                      />
-                      <Modal
-                        title="Delete"
-                        text={<DeleteTwoTone color='error' />}
-                        content={<span>this should be the modal content</span>}
-                        icon
-                      />
-                    </span>
-                  </div>
-                )
-              })
-            }
-          </div>
+          <DocumentsTable documents={documents} />
         </div>
 
         {/* reviews */}
-        <div>
+        {/* <div>
           <Grid display={'flex'} justifyContent={'space-between'} >
             <span>Recent Reviews</span>
             <IconButton onClick={() => alert('show all reviews')} >Show All</IconButton>
           </Grid>
-        </div>
+        </div> */}
       </Container>
 
-      <CollegeDetails />
+      {/* <CollegeDetails /> */}
     </div>
   )
 }

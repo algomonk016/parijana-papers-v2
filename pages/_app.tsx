@@ -17,6 +17,8 @@ import Header from '@/layouts/SidebarLayout/Header';
 import { Grid } from '@mui/material';
 import { changeRoute, checkLoggedInUser, logoutUser } from '@/utils';
 // import { Footer } from '@/components';
+import 'ag-grid-community/styles//ag-grid.css';
+import 'ag-grid-community/styles//ag-theme-alpine.css';
 
 const clientSideEmotionCache = createEmotionCache();
 
