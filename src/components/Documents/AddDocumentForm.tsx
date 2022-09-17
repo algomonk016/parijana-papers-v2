@@ -100,15 +100,6 @@ const Form = (props: FormProps): JSX.Element => {
   const onSubmit = async (data: Form) => {
     handleUploadStage(UploadStage.uploadingfile);
 
-    // setTimeout(() => {
-    //   handleUploadStage(UploadStage.uploadingDetails)
-    //   setTimeout(() => {
-    //     handleUploadStage(UploadStage.success)
-    //   }, 1500)
-    // }, 2500)
-
-    // return;
-
     const response = await uploadPdf(fileSelected);
     if (response.hasOwnProperty('error')) {
       handleUploadStage(UploadStage.failure);

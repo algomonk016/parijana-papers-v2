@@ -2,16 +2,19 @@ export interface IdName {
   id: string;
   name: string;
 }
+export interface KeyValues{
+  [key: string]: any;
+}
 
 export interface PDF {
   id: string,
-  subcode: string,
+  subCode: string,
   uploadDate: Date,
   collegeId: string,
-  uploadedBy: IdName,
-  fileName: string,
+  name: string,
   views: number,
-  teacher: IdName,
+  // teacher: IdName,
+  teacher: string,
   viewLink: string,
   downloadLink: string,
   pdfFor: pdfFor,

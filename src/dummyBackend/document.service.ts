@@ -1,11 +1,11 @@
-import { documents } from './dummyData'
-export const getDocuments = async (): Promise<any> => {
-  
-  const promise =  new Promise((resolve, reject) => {
-    resolve({
-      data: documents
-    })
-  })
+import { getData } from '@/service/common.service';
+import { getStorageData } from '@/utils'
 
-  return promise
+export const getDocuments = async (): Promise<any> => {
+  const { id } = getStorageData('user', 'session');
+  const url = `/admins/${id}/documents`
+  
+  return getData(url, {
+    sendTokenInHeader: true
+  }).then(res => res.json());
 }

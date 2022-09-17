@@ -5,14 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 
 const CollegeDetails = (): JSX.Element => {
 
-  const { data, isLoading, hasError } = useSelector((state: any) => state.user);
-
 
   return (
     <div>
-      {
-        isLoading ? <div>loading...</div> : <button>{`${data.name} ${data.email}`}</button>
-      }
+      this is college details
     </div>
   )
 }

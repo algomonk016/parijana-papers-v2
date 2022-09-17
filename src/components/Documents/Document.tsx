@@ -9,7 +9,7 @@ interface Props {
 
 const Document = (props: Props): JSX.Element => {
 
-  const { subcode, year, teacher, fileName, pdfFor } = props.data;
+  const { subCode, year, teacher, name, pdfFor } = props.data;
 
   return (
     <div style={{
@@ -24,7 +24,7 @@ const Document = (props: Props): JSX.Element => {
       }}>
         <Image
           src="/static/images/placeholders/logo/document.jpg"
-          alt={fileName}
+          alt={name}
           width={150}
           height={150}
         />
@@ -36,17 +36,17 @@ const Document = (props: Props): JSX.Element => {
           display: 'flex',
           justifyContent: 'space-between'
         }}>
-          <Typography> {fileName} </Typography>
+          <Typography> {name} </Typography>
           <Typography> {pdfFor} </Typography>
         </div>
         <div style={{
           display: 'flex',
           justifyContent: 'space-between'
         }}>
-          <Typography> {subcode} </Typography>
+          <Typography> {subCode} </Typography>
           <Typography> {year} </Typography>
         </div>
-        <Typography> {teacher.name} </Typography>
+        <Typography> {teacher} </Typography>
       </div>
     </div>
   )
