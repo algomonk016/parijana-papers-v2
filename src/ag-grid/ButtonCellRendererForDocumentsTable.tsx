@@ -3,6 +3,7 @@ import { DeleteTwoTone, EditTwoTone, RemoveRedEyeTwoTone } from '@mui/icons-mate
 import React from "react";
 import Modal from "@/components/modals";
 import { PDF } from "@/constants";
+import { AddDocumentForm } from "@/components";
 
 interface EditDocumentProps {
   data: PDF;
@@ -13,7 +14,7 @@ const EditDocument = (props: EditDocumentProps): JSX.Element => {
   
   return (
     <div>
-      Edit Form
+      <AddDocumentForm  documentData={data} hasDocumentData />
     </div>
   )
 }
