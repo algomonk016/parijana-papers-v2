@@ -2,14 +2,18 @@ import React, { useEffect, useState } from "react";
 import { CircularProgress, Fab, Grid, TextField, Typography } from "@mui/material";
 import { generateDropDownOptions, getStorageData, getWindowDimensions } from "@/utils";
 import { DynamicForm } from '@/components';
-import { College, Option } from "@/constants";
+import { College, Option, PDF } from "@/constants";
 import { getCollegeById } from "@/service/college.service";
 import { postDocumentData, uploadPdf } from "@/service/document.service";
 import { Add, CheckCircleOutlineTwoTone, ErrorOutlineTwoTone } from '@mui/icons-material'
 
-interface FormProps {
+interface FormProps extends AddDocumentFormProps {
   collegeDetails: College,
   handleUploadStage: (stage: UploadStage) => void;
+}
+interface AddDocumentFormProps{
+  hasDocumentData?: boolean,
+  documentData?:PDF
 }
 
 interface Form {
@@ -33,8 +37,9 @@ enum UploadStage {
 }
 
 const Form = (props: FormProps): JSX.Element => {
-  const { collegeDetails, handleUploadStage  } = props;
+  const { collegeDetails, handleUploadStage,hasDocumentData,documentData  } = props;
   const { teachers, name, exams, id } = collegeDetails;
+
 
   const fields: any = [
     {
@@ -43,7 +48,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "CSE-S405 Mid",
       type: "text",
       validationType: "string",
-      value: '',
+      value: hasDocumentData? documentData.name: '',
       validations: [],
     },
     {
@@ -52,7 +57,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "CSE-S405",
       type: "text",
       validationType: "string",
-      value: '',
+      value: hasDocumentData? documentData.subCode: '',
       validations: [],
     },
     {
@@ -61,7 +66,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "",
       type: "select",
       validationType: "",
-      value: '',
+      value:  hasDocumentData? {value:documentData.pdfFor , label:documentData.pdfFor} :'',
       validations: [],
       options: generateDropDownOptions(exams)
     },
@@ -71,7 +76,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "Teacher",
       type: "select",
       validationType: "",
-      value: '',
+      value: hasDocumentData? {value: documentData.teacher , label : documentData.teacher} : '',
       validations: [],
       options: generateDropDownOptions(teachers)
     },
@@ -81,7 +86,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "2019",
       type: "text",
       validationType: "string",
-      value: '',
+      value: hasDocumentData?documentData.year : '',
       validations: [],
     },
     {
@@ -90,7 +95,7 @@ const Form = (props: FormProps): JSX.Element => {
       placeholder: "7",
       type: "text",
       validationType: "string",
-      value: '',
+      value: hasDocumentData? documentData.sem : '',
       validations: [],
     }
   ]
@@ -171,7 +176,7 @@ const Form = (props: FormProps): JSX.Element => {
   )
 }
 
-const AddDocumentForm = (): JSX.Element => {
+const AddDocumentForm = (props:AddDocumentFormProps): JSX.Element => {
   const { height } = getWindowDimensions();
   const { collegeId } = getStorageData('user', 'session')
   const [collegeDetails, setCollegeDetails] = useState<College>()
@@ -223,7 +228,7 @@ const AddDocumentForm = (): JSX.Element => {
   return (
     <Grid minHeight={height * 0.7}>
       {
-        hasFetchedDetails ? <Form collegeDetails={collegeDetails} handleUploadStage={handleUploadStage} /> : <h1>Loading....</h1>
+        hasFetchedDetails ? <Form {...props} collegeDetails={collegeDetails} handleUploadStage={handleUploadStage} /> : <h1>Loading....</h1>
       }
     </Grid >
   )
