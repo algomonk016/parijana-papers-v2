@@ -37,9 +37,8 @@ enum UploadStage {
 }
 
 const Form = (props: FormProps): JSX.Element => {
-  const { collegeDetails, handleUploadStage,hasDocumentData,documentData  } = props;
+  const { collegeDetails, handleUploadStage, hasDocumentData, documentData  } = props;
   const { teachers, name, exams, id } = collegeDetails;
-
 
   const fields: any = [
     {
@@ -99,9 +98,9 @@ const Form = (props: FormProps): JSX.Element => {
       validations: [],
     }
   ]
-
-  const [fileSelected, setFileSelected] = useState<any>();
-
+  
+  const [fileSelected, setFileSelected] = useState<any>(documentData);
+ 
   const onSubmit = async (data: Form) => {
     handleUploadStage(UploadStage.uploadingfile);
 
@@ -193,7 +192,6 @@ const AddDocumentForm = (props:AddDocumentFormProps): JSX.Element => {
   const [isUploading, setIsUploading] =useState<boolean>(false);
   const handleUploadStage = (stage: UploadStage): void => {
     setUploadStage(stage)
-    console.log('stage', stage)
     if (stage !== UploadStage.success && stage !== UploadStage.failure) {
       setIsUploading(true);
     } else{
