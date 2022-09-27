@@ -25,3 +25,12 @@ export const postDocumentData = (payload: any) => {
     body: payload
   }).then(res => res.json())
 }
+
+export const getDocumentsByAdminId = () =>{
+  const { id } = getStorageData('user', 'session');
+  const url = `/admins/${id}/documents`
+
+  return getData(url, {
+    sendTokenInHeader : true
+  }).then(result => result.json())
+}

@@ -1,5 +1,4 @@
 import { PDF } from "@/constants";
-import { getDocuments } from "@/dummyBackend/document.service";
 import { Grid, Typography } from "@mui/material";
 import { Container } from "@mui/system";
 import React, { useEffect, useState } from "react";
@@ -9,11 +8,12 @@ import {
 } from "@mui/icons-material";
 import { AddDocumentForm, DocumentsTable } from '@/components'
 import Modal from "@/components/modals";
+import { getDocumentsByAdminId } from "@/service/document.service";
 
 const Admin = (): JSX.Element => {
   const [documents, setDocuments] = useState<PDF[]>([]);
   useEffect(() => {
-    getDocuments()
+    getDocumentsByAdminId()
       .then((res: PDF[]) => {
         setDocuments(res)
       })
