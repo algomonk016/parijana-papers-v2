@@ -53,12 +53,7 @@ export const getStorageData = (key: string, storage: storageType = 'local'): any
       return undefined;
     }
 
-    try{
-      return JSON.parse(data);
-    } catch(e){
-      return data;
-    }
-
+    return JSON.parse(data);
   }
 
   return undefined;
@@ -66,10 +61,7 @@ export const getStorageData = (key: string, storage: storageType = 'local'): any
 }
 
 export const setStorageData = (key: string, storage: storageType = 'local', data: any): any => {
-  if (!pureData.includes(typeof data)) {
-    data = JSON.stringify(data);
-  }
-
+  data = JSON.stringify(data);
   storage === 'session' ? sessionStorage.setItem(key, data) : localStorage.setItem(key, data);
 }
 
